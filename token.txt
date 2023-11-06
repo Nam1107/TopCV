@@ -1,0 +1,6 @@
+{
+    "admin": "16|zJZh95lRkPIhK3Jebs8hPYaTe9YyuAorcatekwm752c666a2",
+    "update": "17|Ob1gyDmROgzYmXRBkEaL2RMFo3g6eXxeXmh2Pdbw7d67b22a",
+    "basic": "18|ssV3YKdsR0kb53plvT77tR4bqQVVgClitE7CYAai83dda3ad"
+    "key_sanctum":5ZekGAXPIu0EgXR0OX+K1uOcYEDdVM4eiptxPE17YhE=
+}

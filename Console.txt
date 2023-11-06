@@ -1,0 +1,11 @@
+php artisan migrate
+php artisan db:seed
+php artisan make:seeder CompanySeeder
+**dinh dang kieu du lieu tra ve
+php artisan make:resource CompanyResource
+**phan trang
+php artisan make:resource CompanyCollection --collection
+**tao model-controller
+php artisan make:model Blog -mcr
+**tao controller theo mau
+php artisan make:controller BlogController --resource
