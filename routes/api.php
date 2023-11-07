@@ -5,6 +5,7 @@ use App\Http\Controllers\API\V1\InvoiceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\API\V1\AuthController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -27,3 +28,24 @@ Route::group(['prefix' => 'v1','middleware'=>'auth:sanctum'], function () {
     Route::apiResource('invoices', InvoiceController::class);
     Route::post('invoices/bulk',[InvoiceController::class,'bulkStore']);
 })->middleware('auth:sanctum');
+
+Route::post('/login', [AuthController::class,'login']);
+
+Route::group([
+
+    'prefix' => 'auth'
+
+], function () {
+    Route::post('register', [AuthController::class,'register']);
+    // Route::post('register',function(){
+    //     return 1;
+
+    // });
+    Route::post('login', [AuthController::class,'login']);
+    Route::post('logout', [AuthController::class,'logout']);
+    Route::post('refresh', [AuthController::class,'refresh']);
+    Route::post('me', [AuthController::class,'me']);
+
+});
+
+

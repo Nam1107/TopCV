@@ -3,11 +3,17 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Auth\SessionGuard;
 use Illuminate\Http\Request;
+use App\Models\User;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
-    //
+    public function __construct()
+    {
+        $this->middleware('jwtauth', ['except' => ['login','register']]);
+    }
     public function register(Request $request)
     {
         $request->validate([
@@ -36,38 +42,95 @@ class AuthController extends Controller
             return response()->json(['error'=>'Provide proper details']);
         }
     }
+    
+
+    /**
+     * Get a JWT via given credentials.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function login(Request $request)
     {
         $request->validate([
-        'email' => 'required|string|email',
-        'password' => 'required|string',
-        'remember_me' => 'boolean'
+            'email'=>'required|email',
+            'password'=>'required|min:8'
         ]);
+        // $credentials = request(['email', 'password']);
 
-        $credentials = request(['email','password']);
-        if(!Auth::attempt($credentials))
-        {
-        return response()->json([
-            'message' => 'Unauthorized'
-        ],401);
+        $credentials = $request->only(['email', 'password']);
+
+        if (! $token = auth()->attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $user = $request->user();
-        $tokenResult = $user->createToken('Personal Access Token');
-        $token = $tokenResult->plainTextToken;
-
-        return response()->json([
-        'accessToken' =>$token,
-        'token_type' => 'Bearer',
-        ]);
+        return $this->respondWithToken($token);
     }
-    public function logout(Request $request)
+
+    /**
+     * Get the authenticated User.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function me()
     {
-        $request->user()->tokens()->delete();
-
+        $token =  JWTAuth::getToken();
+    try {
+        $user = JWTAuth::authenticate($token);
+    } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
         return response()->json([
-        'message' => 'Successfully logged out'
-        ]);
+            'status' => 500,
+            'message' => 'Token Expired',
+        ], 500);
+    } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+        return response()->json([
+            'status' => 500,
+            'message' => 'Token Invalid',
+        ], 500);
+    } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
+        return response()->json([
+            'status' => 500,
+            'message' => $e->getMessage(),
+        ], 500);
+    }
+        return response()->json(auth()->user());
+    }
 
+    /*
+     *
+     * Log the user out (Invalidate the token).
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function logout()
+    {
+        auth()->logout();
+
+        return response()->json(['message' => 'Successfully logged out']);
+    }
+
+    /**
+     * Refresh a token.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function refresh()
+    {
+        return $this->respondWithToken(auth()->refresh());
+    }
+
+    /**
+     * Get the token array structure.
+     *
+     * @param  string $token
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function respondWithToken($token)
+    {
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() 
+        ]);
     }
 }
