@@ -7,7 +7,7 @@ use Illuminate\Auth\SessionGuard;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Tymon\JWTAuth\Facades\JWTAuth;
-
+use Hash;
 class AuthController extends Controller
 {
     public function __construct()
@@ -54,10 +54,19 @@ class AuthController extends Controller
         $request->validate([
             'email'=>'required|email',
             'password'=>'required|min:8'
+        ],[
+            'required'=>':attribute không được bỏ trống',
+            'email' => ':attribute không hợp lệ',
+            'min'=> ':attribute mật khẩu quá ngắn'
         ]);
         // $credentials = request(['email', 'password']);
 
         $credentials = $request->only(['email', 'password']);
+
+        $user = User::where('email', $request->email)->first();
+        if (!Hash::check($request->password, $user->password, [])) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
 
         if (! $token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
@@ -73,25 +82,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        $token =  JWTAuth::getToken();
-    try {
-        $user = JWTAuth::authenticate($token);
-    } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-        return response()->json([
-            'status' => 500,
-            'message' => 'Token Expired',
-        ], 500);
-    } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-        return response()->json([
-            'status' => 500,
-            'message' => 'Token Invalid',
-        ], 500);
-    } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
-        return response()->json([
-            'status' => 500,
-            'message' => $e->getMessage(),
-        ], 500);
-    }
+       
         return response()->json(auth()->user());
     }
 
