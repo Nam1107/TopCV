@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\API\V1\AuthController;
+use App\Http\Controllers\API\V1\RefreshTokenController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -41,6 +42,7 @@ Route::group([
     Route::post('logout', [AuthController::class,'logout']);
     Route::post('refresh', [AuthController::class,'refresh']);
     Route::post('me', [AuthController::class,'me']);
+    Route::post('token', [RefreshTokenController::class,'store']);
 
 });
 

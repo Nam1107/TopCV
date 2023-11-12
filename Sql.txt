@@ -1,0 +1,79 @@
+table users{
+  id int
+  name string
+  sex string
+  phone string
+  address string
+  district string
+  city string
+  role int
+  avatar string
+  email string
+  password string
+
+}
+table refresh_tokens{
+  id int
+  user_id int 
+  token string
+
+}
+table user_roles{
+  id int
+  role string
+}
+
+table employers{
+  id int
+  employer_id int
+  company_id int
+}
+table job{
+  id int
+  name string
+  salary string
+  sex string
+  desc string
+  exp string
+  quantity int
+  level string
+  type string
+  company_id int
+  created_by int
+  expire_at datetime
+  status string
+}
+
+table company{
+  id int
+  name string
+  email string
+  address string
+  district string
+  city string
+  phone string
+  logo string
+  details string
+  url string
+  owner_id int
+}
+
+table apply_job{
+  id int
+  user_id int
+  job_id int
+  company_id int
+  status string
+}
+
+table accept_job{
+ id int
+ user_id int
+ job_id int
+ company_id int
+ status string
+}
+
+
+
+

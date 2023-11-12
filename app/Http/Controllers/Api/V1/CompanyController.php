@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1;
 
 use Illuminate\Http\Request;
 use App\Models\Company;
 use App\Http\Resources\CompanyResource;
 use App\Http\Resources\CompanyCollection;
+use App\Http\Controllers;
 use Error;
 use Exception;
 

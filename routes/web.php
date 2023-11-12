@@ -68,7 +68,7 @@ Route::get('chuyen-muc/{id?}', [TestController::class, 'getCategory']);
 
 Route::get('setup',function(){
     $cred = [
-        'email'=>'admin@gmail.com',
+        'email'=>'admin2@gmail.com',
         'password'=>'12345678',
     ];
     if(!Auth::attempt($cred)){
