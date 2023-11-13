@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Company extends Model
+class Commpany extends Model
 {
     use HasFactory;
     protected $guarded = [];
@@ -17,16 +17,15 @@ class Company extends Model
         'city',
         'phone',
         'logo',
-        'detail',
-        'url_page',
+        'details',
+        'url',
         'owner_id',
-        'follow_count',
     ];
     protected $primaryKey = 'id';
-    protected $table = 'company';
+    protected $table = 'commpany';
 
     public function ownedBy()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Customer::class);
     }
 }

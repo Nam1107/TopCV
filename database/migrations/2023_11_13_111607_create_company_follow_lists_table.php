@@ -11,17 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('refresh_tokens', function (Blueprint $table) {
+        Schema::create('company_follow_list', function (Blueprint $table) {
             $table->id();
-            $table->string('token_type');
-            $table->string('refresh_token',500);
             $table->timestamps();
         });
-
-        Schema::table('refresh_tokens', function (Blueprint $table) {
+        Schema::table('company_follow_list', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('company_id');
          
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('company_id')->references('id')->on('company');
         });
     }
 
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('refresh_tokens');
+        Schema::dropIfExists('company_follow_list');
     }
 };

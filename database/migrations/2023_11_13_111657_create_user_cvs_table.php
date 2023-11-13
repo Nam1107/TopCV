@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('refresh_tokens', function (Blueprint $table) {
+        Schema::create('user_cvs', function (Blueprint $table) {
             $table->id();
-            $table->string('token_type');
-            $table->string('refresh_token',500);
+            $table->string('url_cv',500);
             $table->timestamps();
         });
 
-        Schema::table('refresh_tokens', function (Blueprint $table) {
+        Schema::table('user_cvs', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id');
-         
             $table->foreign('user_id')->references('id')->on('users');
         });
+
+
     }
 
     /**
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('refresh_tokens');
+        Schema::dropIfExists('user_cvs');
     }
 };
