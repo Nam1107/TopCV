@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\V1;
 
-use App\Models\Job_saved_list;
-use Illuminate\Http\Request;
+use App\Models\Company;
+use App\Http\Requests\StoreCompanyRequest;
+use App\Http\Requests\UpdateCompanyRequest;
 
-class JobSavedListController extends Controller
+class CompanyController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -26,7 +27,7 @@ class JobSavedListController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreCompanyRequest $request)
     {
         //
     }
@@ -34,7 +35,7 @@ class JobSavedListController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Job_saved_list $job_saved_list)
+    public function show(Company $company)
     {
         //
     }
@@ -42,7 +43,7 @@ class JobSavedListController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Job_saved_list $job_saved_list)
+    public function edit(Company $company)
     {
         //
     }
@@ -50,7 +51,7 @@ class JobSavedListController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Job_saved_list $job_saved_list)
+    public function update(UpdateCompanyRequest $request, Company $company)
     {
         //
     }
@@ -58,7 +59,7 @@ class JobSavedListController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Job_saved_list $job_saved_list)
+    public function destroy(Company $company)
     {
         //
     }

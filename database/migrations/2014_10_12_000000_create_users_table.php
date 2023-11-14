@@ -31,7 +31,7 @@ return new class extends Migration
             $table->string('address');
             $table->string('district');
             $table->string('role');
-            $table->string('avatar');
+            $table->string('avatar',500);
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

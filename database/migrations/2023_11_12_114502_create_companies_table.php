@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('city');
             $table->string('phone');
             $table->string('logo',500);
-            $table->string('detail');
+            $table->string('detail',500);
             $table->string('url_page',500);
             $table->integer('follow_count');
             $table->timestamps();

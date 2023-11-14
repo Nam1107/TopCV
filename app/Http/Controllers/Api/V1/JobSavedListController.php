@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\V1;
 
-use App\Models\Employer;
+use App\Models\Job_saved_list;
 use Illuminate\Http\Request;
 
-class EmployerController extends Controller
+class JobSavedListController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class EmployerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Employer $employer)
+    public function show(Job_saved_list $job_saved_list)
     {
         //
     }
@@ -42,7 +42,7 @@ class EmployerController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Employer $employer)
+    public function edit(Job_saved_list $job_saved_list)
     {
         //
     }
@@ -50,7 +50,7 @@ class EmployerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Employer $employer)
+    public function update(Request $request, Job_saved_list $job_saved_list)
     {
         //
     }
@@ -58,7 +58,7 @@ class EmployerController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Employer $employer)
+    public function destroy(Job_saved_list $job_saved_list)
     {
         //
     }

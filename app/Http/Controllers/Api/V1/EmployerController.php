@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\V1;
 
-use App\Models\Company_follow_list;
+use App\Models\Employer;
 use Illuminate\Http\Request;
 
-class CompanyFollowListController extends Controller
+class EmployerController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class CompanyFollowListController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Company_follow_list $company_follow_list)
+    public function show(Employer $employer)
     {
         //
     }
@@ -42,7 +42,7 @@ class CompanyFollowListController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Company_follow_list $company_follow_list)
+    public function edit(Employer $employer)
     {
         //
     }
@@ -50,7 +50,7 @@ class CompanyFollowListController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Company_follow_list $company_follow_list)
+    public function update(Request $request, Employer $employer)
     {
         //
     }
@@ -58,7 +58,7 @@ class CompanyFollowListController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Company_follow_list $company_follow_list)
+    public function destroy(Employer $employer)
     {
         //
     }
