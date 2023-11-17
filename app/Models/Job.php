@@ -21,8 +21,8 @@ class Job extends Model
     // expire_at datetime
     // status string
 
-    protected $guarded = [];
-    protected $fill_table = [
+    // protected $guarded = [];
+    protected $fillable = [
         'name', 
         'salary', 
         'sex', 

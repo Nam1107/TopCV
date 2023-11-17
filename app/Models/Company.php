@@ -9,7 +9,7 @@ class Company extends Model
 {
     use HasFactory;
     protected $guarded = [];
-    protected $fill_table = [
+    protected $fillable = [
         'name',
         'email',
         'address',
@@ -27,6 +27,6 @@ class Company extends Model
 
     public function ownedBy()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,'owner_id','id');
     }
 }

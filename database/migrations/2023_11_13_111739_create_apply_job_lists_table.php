@@ -21,9 +21,7 @@ return new class extends Migration
             $table->string('status');
             $table->string('user_cv',500);
             $table->timestamps();
-        });
 
-        Schema::table('apply_job_list', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('job_id');
             $table->unsignedBigInteger('company_id');
@@ -33,6 +31,17 @@ return new class extends Migration
             $table->foreign('job_id')->references('id')->on('jobs');
             $table->foreign('company_id')->references('id')->on('company');
         });
+
+        // Schema::table('apply_job_list', function (Blueprint $table) {
+        //     $table->unsignedBigInteger('user_id');
+        //     $table->unsignedBigInteger('job_id');
+        //     $table->unsignedBigInteger('company_id');
+
+         
+        //     $table->foreign('user_id')->references('id')->on('users');
+        //     $table->foreign('job_id')->references('id')->on('jobs');
+        //     $table->foreign('company_id')->references('id')->on('company');
+        // });
     }
 
     /**

@@ -20,18 +20,16 @@ return new class extends Migration
             $table->string('district');
             $table->string('city');
             $table->string('phone');
-            $table->string('logo',500);
-            $table->string('detail',500);
-            $table->string('url_page',500);
+            $table->string('logo',500)->nullable();
+            $table->string('detail',500)->nullable();
+            $table->string('url_page',500)->nullable();
             $table->integer('follow_count');
             $table->timestamps();
-        });
-
-        Schema::table('company', function (Blueprint $table) {
             $table->unsignedBigInteger('owner_id');
          
             $table->foreign('owner_id')->references('id')->on('users');
         });
+
     }
 
     /**

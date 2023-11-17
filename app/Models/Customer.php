@@ -9,8 +9,8 @@ class Customer extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
-    protected $fill_table = [
+    // protected $guarded = [];
+    protected $fillable = [
         'name',
         'type',
         'email',

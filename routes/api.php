@@ -2,9 +2,10 @@
 
 use App\Http\Controllers\API\V1\CustomerController;
 use App\Http\Controllers\API\V1\InvoiceController;
+use App\Http\Controllers\API\V1\CompanyController;
+use App\Http\Controllers\API\V1\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\API\V1\AuthController;
 use App\Http\Controllers\API\V1\RefreshTokenController;
 /*
@@ -22,11 +23,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::resource('company', CompanyController::class)->except('edit', 'create');
+// Route::resource('company', CompanyController::class)->except('edit', 'create');
 
-Route::group(['prefix' => 'v1','middleware'=>'auth:sanctum'], function () {
+Route::group(['prefix' => 'v1'], function () {
     Route::apiResource('customers', CustomerController::class);
     Route::apiResource('invoices', InvoiceController::class);
+    Route::apiResource('company', CompanyController::class);
+    Route::apiResource('users', UserController::class);
     Route::post('invoices/bulk',[InvoiceController::class,'bulkStore']);
 })->middleware('auth:sanctum');
 

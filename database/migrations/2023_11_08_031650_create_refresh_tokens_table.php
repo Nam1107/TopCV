@@ -16,9 +16,6 @@ return new class extends Migration
             $table->string('token_type');
             $table->string('refresh_token',500);
             $table->timestamps();
-        });
-
-        Schema::table('refresh_tokens', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id');
          
             $table->foreign('user_id')->references('id')->on('users');

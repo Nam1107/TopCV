@@ -12,32 +12,44 @@ table users{
   password string
 
 }
+table company_follow_list{
+    id int
+    user_id int
+    company_id int
+}
+table job_saved_list{
+  id int
+  user_id int
+  job_id int
+}
 table refresh_tokens{
   id int
   user_id int 
   token string
 
 }
-table user_roles{
+table user_cv{
   id int
-  role string
+  user_id int
+  url string
 }
 
-table employers{
+
+table employer{
   id int
   employer_id int
   company_id int
 }
-table job{
+table jobs{
   id int
-  name string
+  title string
   salary string
   sex string
   desc string
   exp string
   quantity int
   level string
-  type string
+  field_of_job string
   company_id int
   created_by int
   expire_at datetime
@@ -53,27 +65,51 @@ table company{
   city string
   phone string
   logo string
-  details string
-  url string
+  detail string
+  url_page string
   owner_id int
+  follow_count int
 }
 
-table apply_job{
+table apply_job_list{
   id int
   user_id int
   job_id int
   company_id int
   status string
-}
-
-table accept_job{
- id int
- user_id int
- job_id int
- company_id int
- status string
+  user_cv string
 }
 
 
 
 
+
+
+
+Ref: "users"."id" < "company"."owner_id"
+
+Ref: "company"."id" < "employer"."company_id"
+
+Ref: "users"."id" < "user_cv"."id"
+
+Ref: "users"."id" < "company_follow_list"."user_id"
+
+Ref: "company"."id" < "company_follow_list"."company_id"
+
+Ref: "company"."id" < "jobs"."company_id"
+
+Ref: "users"."id" < "jobs"."created_by"
+
+Ref: "users"."id" < "employer"."employer_id"
+
+Ref: "users"."id" < "job_saved_list"."user_id"
+
+Ref: "users"."id" < "apply_job_list"."user_id"
+
+Ref: "users"."id" < "refresh_tokens"."user_id"
+
+Ref: "company"."id" < "apply_job_list"."company_id"
+
+Ref: "jobs"."id" < "apply_job_list"."job_id"
+
+Ref: "jobs"."id" < "job_saved_list"."job_id"

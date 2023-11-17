@@ -15,12 +15,17 @@ return new class extends Migration
             $table->id();
             $table->string('url_cv',500);
             $table->timestamps();
-        });
 
-        Schema::table('user_cvs', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
         });
+
+
+
+        // Schema::table('user_cvs', function (Blueprint $table) {
+        //     $table->unsignedBigInteger('user_id');
+        //     $table->foreign('user_id')->references('id')->on('users');
+        // });
 
 
     }

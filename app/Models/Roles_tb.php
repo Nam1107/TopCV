@@ -5,15 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class RefreshToken extends Model
+class Roles_tb extends Model
 {
     use HasFactory;
-    // protected $guarded = [];
     protected $fillable = [
-        'user_id',
-        'refresh_token',
-        'token_type',
+        'id',
+        'role_name',
     ];
     protected $primaryKey = 'id';
-    protected $table = 'refresh_tokens';
+    protected $table = 'roles_tb';
 }

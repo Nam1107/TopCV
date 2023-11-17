@@ -19,8 +19,24 @@ class User extends Authenticatable implements JWTSubject
      *
      * @var array<int, string>
      */
+    // name string
+    // sex string
+    // phone string
+    // address string
+    // city string
+    // role int
+    // avatar string
+    // email string
+    // password string
     protected $fillable = [
         'name',
+        'sex',
+        'phone',
+        'address' ,
+        'district',
+        'province' ,
+        'role' ,
+        'avatar' ,
         'email',
         'password',
     ];
@@ -48,6 +64,11 @@ class User extends Authenticatable implements JWTSubject
     public function company()
     {
         return $this->hasMany(Company::class);
+    }
+
+    public function roles(){
+        return $this->belongsToMany(Roles_tb::class, 'roles_atr', 'user_id', 'role_id');
+
     }
 
     public function getJWTIdentifier()

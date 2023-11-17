@@ -14,15 +14,13 @@ return new class extends Migration
         Schema::create('employer', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-        });
-
-        Schema::table('employer', function (Blueprint $table) {
             $table->unsignedBigInteger('employer_id');
             $table->unsignedBigInteger('company_id');
          
             $table->foreign('employer_id')->references('id')->on('users');
             $table->foreign('company_id')->references('id')->on('company');
         });
+
     }
 
     /**
