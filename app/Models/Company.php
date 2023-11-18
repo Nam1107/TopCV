@@ -10,17 +10,17 @@ class Company extends Model
     use HasFactory;
     protected $guarded = [];
     protected $fillable = [
-        'name',
-        'email',
-        'address',
-        'district',
-        'city',
-        'phone',
-        'logo',
-        'detail',
-        'url_page',
-        'owner_id',
-        'follow_count',
+        "name",
+        "email",
+        "address",
+        "district",
+        "city",
+        "phone",
+        "logo",
+        "detail",
+        "url_page",
+        "owner_id",
+        "follow_count",
     ];
     protected $primaryKey = 'id';
     protected $table = 'company';

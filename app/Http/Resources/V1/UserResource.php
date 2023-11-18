@@ -21,7 +21,7 @@ class UserResource extends JsonResource
             'address' => $this->address,
             'district'=> $this->district,
             'province' => $this->province,
-            'roles' => new RoleResource($this->roles),
+            'roles' => RoleResource::collection($this->whenLoaded('roles')),
             'avatar' => $this->avatar,
             'email'=> $this->email,
         ];

@@ -45,9 +45,14 @@ class CompanyController extends Controller
      */
     public function store(StoreCompanyRequest $request)
     {
-        //
-        // return 1;
-        return response()->json(auth()->user());
+        $user = auth()->user();
+
+        $request['owner_id'] = $user->id;
+
+        $company = Company::create($request->all());
+        return new CompanyResource($company);
+
+
     }
 
     /**

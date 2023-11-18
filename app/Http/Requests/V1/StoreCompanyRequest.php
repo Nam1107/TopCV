@@ -22,6 +22,15 @@ class StoreCompanyRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'name'=>['required'],
+            'email' =>['required'],
+            'address' =>['required'],
+            'district'=>['required'],
+            'city'=>['required'],
+            'phone'=>['required','numeric'],
+            'logo'=>['required'],
+            'detail'=>['required'],
+            'url_page'=>['required'],
         //     '*.customerId' => ['required','integer'],
         //     '*.amount' => ['required','numeric'],
         //     '*.status' => ['required',Rule::in(['P','B','V','p','b','v'])],

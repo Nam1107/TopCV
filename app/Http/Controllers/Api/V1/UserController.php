@@ -40,7 +40,10 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-
+        $user_role = request()->query('roles');
+        if($user_role){
+            return new UserResource($user->loadMissing('roles'));
+        }
         return new UserResource($user);
     }
 

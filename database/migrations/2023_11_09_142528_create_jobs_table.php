@@ -18,11 +18,11 @@ return new class extends Migration
             $table->string('sex_required');
             $table->string('desc');
             $table->string('exp_required');
-            $table->int('quantity');
+            $table->integer('quantity');
             $table->string('level_required');
             $table->string('field_of_job');
-            $table->int('company_id')->unsigned();
-            $table->int('created_by')->unsigned();
+            $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('created_by');
             $table->string('status');
             $table->datetime('expire_at');
             $table->timestamps();

@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('logo',500)->nullable();
             $table->string('detail',500)->nullable();
             $table->string('url_page',500)->nullable();
-            $table->integer('follow_count');
+            $table->integer('follow_count')->default(0);
             $table->timestamps();
             $table->unsignedBigInteger('owner_id');
          
