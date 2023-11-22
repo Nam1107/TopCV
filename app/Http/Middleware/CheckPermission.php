@@ -13,9 +13,19 @@ class CheckPermission
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next,$role = null): Response
     {
-        $testURL = route('test');
-        return redirect($testURL);
+        $roles =  auth()->user()->roles ;
+        $desired_object = $roles->filter(function($item) {
+           return $item->role_name == $role;
+        })->first();
+        if($role){
+            return $next($request);
+        }
+
+        return response()->json([
+            'error' => 'Provide proper details',
+        ], 401);
+        
     }
 }

@@ -16,14 +16,16 @@ class UserResource extends JsonResource
     {
         return [
             'name' => $this->name,
+            'email'=> $this->email,
             'sex'=> $this->sex,
             'phone'=> $this->phone,
+            'avatar' => $this->avatar,
             'address' => $this->address,
             'district'=> $this->district,
             'province' => $this->province,
             'roles' => RoleResource::collection($this->whenLoaded('roles')),
-            'avatar' => $this->avatar,
-            'email'=> $this->email,
+            
+            
         ];
     }
 }

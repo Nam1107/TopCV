@@ -13,4 +13,7 @@ class Role_user extends Model
         'role_id',
     ];
     protected $table = 'role_user';
+    protected $primaryKey = ['user_id', 'role_id'];
+    public $incrementing = false;
+    public $timestamps = false;
 }

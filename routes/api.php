@@ -26,10 +26,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Route::resource('company', CompanyController::class)->except('edit', 'create');
 
 Route::group(['prefix' => 'v1'], function () {
-    Route::apiResource('customers', CustomerController::class);
-    Route::apiResource('invoices', InvoiceController::class);
-    Route::apiResource('company', CompanyController::class);
-    Route::apiResource('users', UserController::class);
+    Route::apiResource('customers', CustomerController::class)->except('edit', 'create');
+    Route::apiResource('invoices', InvoiceController::class)->except('edit', 'create');
+    Route::apiResource('company', CompanyController::class)->except('edit', 'create');
+    Route::apiResource('users', UserController::class)->except('edit', 'create');
     Route::post('invoices/bulk',[InvoiceController::class,'bulkStore']);
 })->middleware('auth:sanctum');
 

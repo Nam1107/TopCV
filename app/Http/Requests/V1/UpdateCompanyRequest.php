@@ -21,8 +21,32 @@ class UpdateCompanyRequest extends FormRequest
      */
     public function rules(): array
     {
+        $method = request()->method();
+        if($method == 'PUT'){
+            return [
+                "name"=>['required'],
+                "email" =>['required','email'],
+                "address" =>['required'],
+                "district"=>['required'],
+                "city"=>['required'],
+                "phone"=>['required','numeric'],
+                "logo"=>['required'],
+                "detail"=>['required'],
+                "url_page"=>['required'],
+            ];
+        }
         return [
             //
+            "name"=>['somethings','required'],
+                "email" =>['somethings','required','email'],
+                "address" =>['somethings','required'],
+                "district"=>['somethings','required'],
+                "city"=>['somethings','required'],
+                "phone"=>['somethings','required','numeric'],
+                "logo"=>['somethings','required'],
+                "detail"=>['somethings','required'],
+                "url_page"=>['somethings','required'],
+                "follow_count"=> ['somethings','required'],
         ];
     }
 }

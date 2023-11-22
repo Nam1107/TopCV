@@ -31,7 +31,6 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->string('district')->nullable();
             $table->string('province')->nullable();
-            $table->string('role');
             $table->string('avatar',500)->nullable();
             $table->string('password');
             $table->rememberToken();

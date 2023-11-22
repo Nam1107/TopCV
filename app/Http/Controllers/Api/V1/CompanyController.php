@@ -19,8 +19,6 @@ class CompanyController extends Controller
     }
     public function index(Request $request)
     {
-        //
-        // return new CompanyCollection(Company::paginate(5));
         $filter = ['follow_count'=>'0'];
         $owner = $request->query('owner');
         $company = Company::where($filter);
@@ -29,15 +27,6 @@ class CompanyController extends Controller
             $company = $company->with('ownedBy');
         }
         return new CompanyCollection($company->paginate()->appends($request->query()));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-        
     }
 
     /**
@@ -69,26 +58,18 @@ class CompanyController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Company $company)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(UpdateCompanyRequest $request, Company $company)
     {
         //
+        return $company;
+        $company->update($request->all());
+        return new CompanyResource($company);
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Company $company)
     {
         //
+        $company->delete();
     }
 }

@@ -35,7 +35,6 @@ class User extends Authenticatable implements JWTSubject
         'address' ,
         'district',
         'province' ,
-        'role' ,
         'avatar' ,
         'email',
         'password',
@@ -67,7 +66,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function roles(){
-        return $this->belongsToMany(Roles_tb::class, 'roles_atr', 'user_id', 'role_id');
+        return $this->belongsToMany(Role_tb::class, 'role_user', 'user_id', 'role_id');
 
     }
 

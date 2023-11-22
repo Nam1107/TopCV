@@ -10,11 +10,15 @@ use App\Models\RefreshToken;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Validator;
 use Hash;
+use App\Http\Resources\V1\UserResource;
+use App\Http\Resources\V1\UserCollection;
+
 class AuthController extends Controller
 {
     public function __construct()
     {
         $this->middleware('jwtauth', ['except' => ['login','register','refresh']]);
+        
     }
     public function register(Request $request)
     {
@@ -29,9 +33,7 @@ class AuthController extends Controller
             'name'  => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role'=> 1,
             'avatar'=>'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.nj.com%2Fentertainment%2F2020%2F05%2Feveryones-posting-their-facebook-avatar-how-to-make-yours-even-if-it-looks-nothing-like-you.html&psig=AOvVaw0ORbck3Xz-oUKq6-Alu4ux&ust=1700070234042000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCKDIiKmFxIIDFQAAAAAdAAAAABAE',
-
         ]);
 
         
@@ -51,7 +53,9 @@ class AuthController extends Controller
                 ],201);
         }
         else{
-            return response()->json(['error'=>'Provide proper details']);
+            return response()->json([
+                'error' => 'Provide proper details',
+            ], 401);
         }
     }
     
@@ -63,6 +67,7 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
+        
         $request->validate([
             'email'=>'required|email',
             'password'=>'required|min:8'
@@ -109,8 +114,9 @@ class AuthController extends Controller
      */
     public function me()
     {
-       
-        return response()->json(auth()->user());
+        $this->middleware('checkpermission:hahh');
+
+        return new UserResource(auth()->user()->loadMissing('roles'));
     }
 
     /*
@@ -119,10 +125,14 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function logout()
+    public function logout(Request $request)
     {
-        auth()->logout();
-
+        // auth()->logout();
+        $request->validate([
+                'refresh_token' => 'required'
+            ]);
+        $refreshToken['refresh_token'] = $request['refresh_token'];
+        RefreshToken::where($refreshToken)->delete();
         return response()->json(['message' => 'Successfully logged out']);
     }
 
@@ -133,14 +143,10 @@ class AuthController extends Controller
      */
     public function refresh(Request $request)
     {
-        $token = $request->bearerToken();
-        $check = RefreshToken::where('refresh_token', $token)->first();
-        $user = User::where('id', $check['user_id'])->first();
-        if(!$check||!$user){
-            return response()->json([
-                'error' => 'Refresh Token không hợp lệ',
-            ], 401);
-        }
+        // $token = $request->bearerToken();
+        $token = $request['refresh_token'];
+        $id = RefreshToken::where('refresh_token', $token)->firstOrFail();
+        $user = User::where('id', $id['user_id'])->firstOrFail();
         $token = auth()->refresh(); // set Black_list is false.
         return $this->respondWithToken($token);
     }
