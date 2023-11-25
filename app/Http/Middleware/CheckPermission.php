@@ -13,19 +13,22 @@ class CheckPermission
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next,$role = null): Response
+    public function handle(Request $request, Closure $next,$role): Response
     {
+
         $roles =  auth()->user()->roles ;
-        $desired_object = $roles->filter(function($item) {
+        $permission = $roles->filter(function($item) use ($role){
            return $item->role_name == $role;
         })->first();
-        if($role){
-            return $next($request);
+        if(!$permission){
+            return response()->json([
+                'error' => 'You Do Not Have Permission To Access',
+                'file'  => 'CheckPermission'
+            ], 401);
         }
-
-        return response()->json([
-            'error' => 'Provide proper details',
-        ], 401);
+        
+        return $next($request);
+        
         
     }
 }

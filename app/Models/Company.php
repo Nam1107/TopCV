@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Company extends Model
 {
@@ -28,5 +29,19 @@ class Company extends Model
     public function ownedBy()
     {
         return $this->belongsTo(User::class,'owner_id','id');
+    }
+
+    public function isFollow()
+    {
+        return $this->hasMany(Company_follow_list::class,'company_id','id');
+    }
+    public function following()
+    {
+        return $this->hasMany(Company_follow_list::class,'company_id','id');
+    }
+
+    public function isFollowing(User $user)
+    {
+        return !! $this->following()->where('user_id', $user->id)->count();
     }
 }

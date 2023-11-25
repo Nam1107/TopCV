@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::create('user_cvs', function (Blueprint $table) {
             $table->id();
-            $table->string('url_cv',500);
-            $table->timestamps();
-
             $table->unsignedBigInteger('user_id');
+            $table->string('url_cv',500);
             $table->foreign('user_id')->references('id')->on('users');
+            $table->timestamps();
         });
 
 

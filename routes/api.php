@@ -31,6 +31,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::apiResource('company', CompanyController::class)->except('edit', 'create');
     Route::apiResource('users', UserController::class)->except('edit', 'create');
     Route::post('invoices/bulk',[InvoiceController::class,'bulkStore']);
+    Route::patch('add-follow/{id}',[CompanyController::class,'addFollow']);
 })->middleware('auth:sanctum');
 
 Route::post('/login', [AuthController::class,'login']);

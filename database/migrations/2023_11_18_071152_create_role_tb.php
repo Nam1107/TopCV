@@ -16,12 +16,7 @@ return new class extends Migration
             $table->string('role_name');
         });
 
-        DB::table('role_tb')->insert([
-            [ 'role_name' => 'user'],
-            [ 'role_name' => 'employer'],
-            [ 'role_name' => 'manager'],
-            [ 'role_name' => 'admin'],
-        ]);
+        
     }
 
     /**

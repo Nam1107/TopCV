@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Hash;
+Use DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,7 +16,7 @@ class DatabaseSeeder extends Seeder
     {
         
         
-        \App\Models\User::create(
+        DB::table('users')->create(
             [
                 'name' => "Tran Nam",
                 'sex' => "Nam",
@@ -32,7 +33,22 @@ class DatabaseSeeder extends Seeder
         );
         $this->call(UserSeeder::class);
         $this->call(CompanySeeder::class);
-        \App\Models\role_user::insert(
+
+        
+
+        DB::table('role_tb')->insert([
+            [ 'role_name' => 'user'],
+            [ 'role_name' => 'employer'],
+            [ 'role_name' => 'manager'],
+            [ 'role_name' => 'admin'],
+        ]);
+
+        DB::statement('
+            INSERT INTO role_user(role_id,user_id)
+            SELECT 1,id FROM users
+            WHERE users.id >1
+        ');
+        DB::table('role_user')->insert(
             [
                 [
                     "role_id"=>1,

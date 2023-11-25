@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('company_follow_list', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('company_id');
          
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('company_id')->references('id')->on('company');
+
+            $table->timestamps();
         });
 
         

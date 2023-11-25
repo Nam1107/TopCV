@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('refresh_tokens', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
             $table->string('token_type');
             $table->string('refresh_token',500);
-            $table->timestamps();
-            $table->unsignedBigInteger('user_id');
+            
+            
          
             $table->foreign('user_id')->references('id')->on('users');
+            $table->timestamps();
         });
     }
 

@@ -18,6 +18,7 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->middleware('jwtauth', ['except' => ['login','register','refresh']]);
+        $this->middleware('checkpermission:user',['only' => ['me']]);
         
     }
     public function register(Request $request)
@@ -71,11 +72,13 @@ class AuthController extends Controller
         $request->validate([
             'email'=>'required|email',
             'password'=>'required|min:8'
-        ],[
-            'required'=>':attribute không được bỏ trống',
-            'email' => ':attribute không hợp lệ',
-            'min'=> ':attribute mật khẩu quá ngắn'
-        ]);
+        ]
+        // ,[
+        //     'required'=>':attribute không được bỏ trống',
+        //     'email' => ':attribute không hợp lệ',
+        //     'min'=> ':attribute mật khẩu quá ngắn'
+        // ]
+    );
 
 
         $credentials = $request->only(['email', 'password']);
@@ -114,7 +117,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        $this->middleware('checkpermission:hahh');
+        
 
         return new UserResource(auth()->user()->loadMissing('roles'));
     }

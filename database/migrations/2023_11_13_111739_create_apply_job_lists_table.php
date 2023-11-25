@@ -20,7 +20,7 @@ return new class extends Migration
             $table->id();
             $table->string('status');
             $table->string('user_cv',500);
-            $table->timestamps();
+            
 
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('job_id');
@@ -30,6 +30,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('job_id')->references('id')->on('jobs');
             $table->foreign('company_id')->references('id')->on('company');
+            $table->timestamps();
         });
 
         // Schema::table('apply_job_list', function (Blueprint $table) {

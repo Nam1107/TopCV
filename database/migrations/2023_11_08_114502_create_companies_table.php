@@ -24,8 +24,9 @@ return new class extends Migration
             $table->string('detail',500)->nullable();
             $table->string('url_page',500)->nullable();
             $table->integer('follow_count')->default(0);
-            $table->timestamps();
             $table->unsignedBigInteger('owner_id');
+            $table->timestamps();
+            
          
             $table->foreign('owner_id')->references('id')->on('users');
         });

@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('job_saved_list', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('job_id');
          
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('job_id')->references('id')->on('jobs');
+            $table->timestamps();
         });
     }
 

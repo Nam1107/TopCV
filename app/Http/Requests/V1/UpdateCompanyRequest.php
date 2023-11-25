@@ -11,7 +11,7 @@ class UpdateCompanyRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -37,16 +37,16 @@ class UpdateCompanyRequest extends FormRequest
         }
         return [
             //
-            "name"=>['somethings','required'],
-                "email" =>['somethings','required','email'],
-                "address" =>['somethings','required'],
-                "district"=>['somethings','required'],
-                "city"=>['somethings','required'],
-                "phone"=>['somethings','required','numeric'],
-                "logo"=>['somethings','required'],
-                "detail"=>['somethings','required'],
-                "url_page"=>['somethings','required'],
-                "follow_count"=> ['somethings','required'],
+            "name"=>['sometimes','required'],
+                "email" =>['sometimes','required','email'],
+                "address" =>['sometimes','required'],
+                "district"=>['sometimes','required'],
+                "city"=>['sometimes','required'],
+                "phone"=>['sometimes','required','numeric'],
+                "logo"=>['sometimes','required'],
+                "detail"=>['sometimes','required'],
+                "url_page"=>['sometimes','required'],
+                "follow_count"=> ['sometimes','required'],
         ];
     }
 }
