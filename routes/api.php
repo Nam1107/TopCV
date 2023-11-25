@@ -31,23 +31,33 @@ Route::group(['prefix' => 'v1'], function () {
     Route::apiResource('company', CompanyController::class)->except('edit', 'create');
     Route::apiResource('users', UserController::class)->except('edit', 'create');
     Route::post('invoices/bulk',[InvoiceController::class,'bulkStore']);
-    Route::patch('add-follow/{id}',[CompanyController::class,'addFollow']);
-})->middleware('auth:sanctum');
 
-Route::post('/login', [AuthController::class,'login']);
+    
 
-Route::group([
+    Route::group(['prefix'=> 'company'],function(){
+        Route::patch('add-follow/{id}',[CompanyController::class,'addFollow']);
+        Route::patch('un-follow/{id}',[CompanyController::class,'unFollow']);
+        Route::get('list-follow/{id}',[CompanyController::class,'listFollow']);
+        
+    });
 
-    'prefix' => 'auth'
+    Route::group([
 
-], function () {
-    Route::post('register', [AuthController::class,'register']);
-    Route::post('login', [AuthController::class,'login']);
-    Route::post('logout', [AuthController::class,'logout']);
-    Route::post('refresh', [AuthController::class,'refresh']);
-    Route::post('me', [AuthController::class,'me']);
-    Route::post('token', [RefreshTokenController::class,'store']);
-
+        'prefix' => 'auth'
+    
+    ], function () {
+        Route::post('register', [AuthController::class,'register']);
+        Route::post('login', [AuthController::class,'login']);
+        Route::post('logout', [AuthController::class,'logout']);
+        Route::post('refresh', [AuthController::class,'refresh']);
+        Route::post('me', [AuthController::class,'me']);
+        Route::post('token', [RefreshTokenController::class,'store']);
+    
+    });
+    
 });
+
+
+
 
 

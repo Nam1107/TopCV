@@ -31,17 +31,13 @@ class Company extends Model
         return $this->belongsTo(User::class,'owner_id','id');
     }
 
-    public function isFollow()
-    {
-        return $this->hasMany(Company_follow_list::class,'company_id','id');
-    }
     public function following()
     {
         return $this->hasMany(Company_follow_list::class,'company_id','id');
     }
 
-    public function isFollowing(User $user)
-    {
-        return !! $this->following()->where('user_id', $user->id)->count();
-    }
+    // public function isFollowing(User $user)
+    // {
+    //     return !! $this->following()->where('user_id', $user->id)->count();
+    // }
 }

@@ -8,9 +8,11 @@ use App\Models\Company;
 use App\Models\User;
 use App\Http\Resources\V1\CompanyResource;
 use App\Http\Resources\V1\CompanyCollection;
+use App\Http\Resources\V1\UserCollection;
 use App\Http\Requests\V1\StoreCompanyRequest;
 use App\Http\Requests\V1\UpdateCompanyRequest;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Validation;
 
 use DB;
 
@@ -18,55 +20,68 @@ class CompanyController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('jwtauth', ['only' => ['store','destroy','update','addFollow']]);
-        $this->middleware('checkpermission:manager',['only' => ['store','update','delete']]);
+        $this->middleware('jwtauth', ['only' => ['store','destroy','update','addFollow','unFollow']]);
+        $this->middleware('checkpermission:manager',['only' => ['store','update','destroy']]);
 
     }
+
+    public function checkUser(){
+        $user = auth()->user();
+        if(!$user){
+            return 0;
+        }
+         return $user->id;
+
+    }
+
     public function index(Request $request)
     {
 
-        $id = 2;
+        $id = $this->checkUser();
         $isFollow = DB::table('company')
         ->select(DB::raw('company.id, company_follow_list.user_id AS isFollowing'))
         ->leftJoin('company_follow_list','company.id','=','company_follow_list.company_id')
         ->where('company_follow_list.user_id','=',$id);
 
-        $comp = Company::select('company.*','is_follow.isFollowing')
+        $company = Company::select('company.*','is_follow.isFollowing')
         ->leftJoinSub($isFollow , 'is_follow', function ($join) {
             $join->on('company.id', '=', 'is_follow.id');
         });
-        return new CompanyCollection($comp->paginate()->appends($request->query()));
 
-
-
-
-        $filter = ['follow_count'=>'6'];
-        $owner = $request->query('owner');
+        // $filter = ['follow_count'=>'6'];
+        // $owner = $request->query('owner');
         // $company = Company::where($filter)->get();
         // return $company;
 
-        $company = $this->getList();
-        
+        $owner = $request->query('owner');
+        $perPage = $request->query('perPage');
+        $request->validate([
+            'perPage'=>'numeric|min:5|max:20'
+        ]);
+        if(!$perPage){
+            $perPage = 15;
+        }
         if($owner){
             $company = $company->with('ownedBy');
         }
-        return new CompanyCollection($company );
+
+        return new CompanyCollection($company->paginate($perPage)->appends($request->query()));
+
     }
 
 
 
     public function store(StoreCompanyRequest $request)
     {
-        $user = auth()->user();
-        $count = Company::where('owner_id',$user['id'])->count();
+        $user_id = $this->checkUser();
+        $count = Company::where('owner_id',$user_id)->count();
         if($count >=3){
             return response()->json([
                 'error'=>'You have so many companies'
             ],401);
 
         }
-
-        $request['owner_id'] = $user->id;
+        $request['owner_id'] = $user_id;
 
         $company = Company::create($request->all());
         return new CompanyResource($company);
@@ -80,32 +95,19 @@ class CompanyController extends Controller
     public function show(Company $company)
     {
         $user_id = $this->checkUser();
-        // $user = User::findOrFail($user_id);
-        $test = Company::where('user_id',1)->with('isFollow')->get();
-        return $test;
-        return new CompanyResource($company->loadMissing('isFollowing',$user));
-        if ($company->isFollowing($user)) {
-            return 1;
-        } else {
-            return 0;
-        }
-        $user_id = $this->checkUser();
-        $id = $company->id;
-
-        $check = Company::whereHas('isFollow', function($q) use ($user_id)
-        {
-            $q->where('user_id','=', $user_id);
-        })->find($id);
-
-        if($check){
-            $company['is_follow'] = 1;
-        }
+        $company_id = $company->id;
+        $cop = Company::select('company.*','user_id as isFollowing')
+                            ->leftJoin('company_follow_list',function ($join) use($user_id){
+                                $join->on('company_id','=','company.id');
+                                $join->where('user_id','=',$user_id);
+                            })
+                            ->where('company.id',$company_id)->first();
 
         $includeInvoices = request()->query('owner');
         if($includeInvoices){
-                return new CompanyResource($company->loadMissing('ownedBy'));
+                return new CompanyResource($cop->loadMissing('ownedBy'));
         }
-        return new CompanyResource($company);
+        return new CompanyResource($cop);
     }
 
     /**
@@ -113,20 +115,33 @@ class CompanyController extends Controller
      */
     public function update(UpdateCompanyRequest $request, Company $company)
     {
+        $user_id = $this->checkUser();
+        $company_id = $company->id;
+        $owner_id = $company->owner_id;
 
-        if($user['id'] !== $company['owner_id']){
+        if($user_id !== $owner_id){
             return response()->json([
                 'error' => 'You Do Not Have Permission To Access',
             ], 401);
         }
         $company->update($request->all());
+        
+        $company = Company::select('company.*','user_id as isFollowing')
+                            ->leftJoin('company_follow_list',function ($join) use($user_id){
+                                $join->on('company_id','=','company.id');
+                                $join->where('user_id','=',$user_id);
+                            })
+                            ->where('company.id',$company_id)->first();
         return new CompanyResource($company->loadMissing('ownedBy'));
     }
     public function destroy(Company $company)
     {
         //
-        $user = auth()->user();
-        if($user['id'] !== $company['owner_id']){
+        $user_id = $this->checkUser();
+        $company_id = $company->id;
+        $owner_id = $company->owner_id;
+ 
+        if($user_id !== $owner_id){
             return response()->json([
                 'error' => 'You Do Not Have Permission To Access',
             ], 401);
@@ -136,48 +151,51 @@ class CompanyController extends Controller
             'message' => 'Deleted successfully',
         ], 200);
     }
-    public function addFollow($id){
-        $company = Company::findOrFail($id);
-        $user_id = auth()->user()->id;
+    public function addFollow(string $company_id){
+        $company = Company::findOrFail($company_id);
+        $user_id = $this->checkUser();
 
-        $table = \DB::select("SELECT company.*, company_follow_list.user_id
-        FROM company
-        Left JOIN company_follow_list
-        ON company.id = company_follow_list.company_id
-        WHERE company_follow_list.user_id = ?
-        AND company.id = ?
-        ",[$user_id,$id]);
-
+        $table = \App\Models\Company_follow_list::where('user_id',$user_id)->where('company_id',$company_id)->first();
         if($table){
-            return new CompanyResource($company);
+            return $this->show($company);
         }
 
-        \DB::table('Company_follow_list')->create([
+        \App\Models\Company_follow_list::create([
             'user_id'=>$user_id,
-            'company_id'=>$id
+            'company_id'=>$company_id
         ]);
         
         $company->increment('follow_count',1,[]);
-        return new CompanyResource($company);
+        return $this->show($company);
     }
-    public function checkUser(){
-        $user = auth()->user();
-        if(!$user){
-            return 0;
+    public function unFollow(string $company_id){
+        $company = Company::findOrFail($company_id);
+        $user_id = $this->checkUser();
+
+        \App\Models\Company_follow_list::where([
+            'user_id'=>$user_id,
+            'company_id'=>$company_id
+        ])->delete();
+        
+        $company->decrement('follow_count',1,[]);
+        return $this->show($company);
+    }
+
+
+    public function listFollow(Request $request,string $company_id){
+        $company = Company::findOrFail($company_id);
+        $user = \App\Models\User::join('company_follow_list','users.id','=','company_follow_list.user_id')
+                            ->where('company_follow_list.company_id',$company_id);
+        $perPage = $request->query('perPage');
+        $request->validate([
+            'perPage'=>'numeric|min:5|max:20'
+        ]);
+        if(!$perPage){
+            $perPage = 15;
         }
-         return $user->id;
+
+        return new UserCollection($user->paginate($perPage)->appends($request->query()));
 
     }
-    public function getList($user = null){
-        $company = DB::select('SELECT company.*,A.isFollowing
-        FROM company
-        Left JOIN (SELECT company.*, company_follow_list.user_id AS isFollowing
-        FROM company
-        Left JOIN company_follow_list
-        ON company.id = company_follow_list.company_id
-        WHERE company_follow_list.user_id = ?) AS A
-        ON company.id = A.id
-        ',[$user]);
-        return $company;
-    }
+
 }
