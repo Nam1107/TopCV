@@ -15,6 +15,7 @@ return new class extends Migration
             $table->unsignedBigInteger('role_id');
             $table->unsignedBigInteger('user_id');
             $table->primary(['user_id', 'role_id']);
+            $table->timestamps();
 
             $table->foreign('role_id')->references('id')->on('role_tb');
             $table->foreign('user_id')->references('id')->on('users');

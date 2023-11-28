@@ -7,9 +7,9 @@ use App\Filters\ApiFilters;
 class CustomerFilter extends ApiFilters
 {
     protected $safeParms = [
-        'name' => ['eq'],
+        'name' => ['eq','lk'],
         'type' => ['eq','ne'],
-        'email' => ['eq'],
+        'email' => ['eq','lk'],
         'address' => ['eq'],
         'city' => ['eq'],
         'state' => ['eq'],

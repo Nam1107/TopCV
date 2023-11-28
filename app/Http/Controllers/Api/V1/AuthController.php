@@ -146,8 +146,8 @@ class AuthController extends Controller
      */
     public function refresh(Request $request)
     {
-        // $token = $request->bearerToken();
-        $token = $request['refresh_token'];
+        $token = $request->bearerToken();
+        // $token = $request['refresh_token'];
         $id = RefreshToken::where('refresh_token', $token)->firstOrFail();
         $user = User::where('id', $id['user_id'])->firstOrFail();
         $token = auth()->refresh(); // set Black_list is false.

@@ -26,7 +26,7 @@ class StoreCompanyRequest extends FormRequest
             'email' =>['required'],
             'address' =>['required'],
             'district'=>['required'],
-            'city'=>['required'],
+            'province'=>['required'],
             'phone'=>['required','numeric'],
             'logo'=>['required'],
             'detail'=>['required'],

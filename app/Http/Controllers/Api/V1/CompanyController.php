@@ -20,8 +20,21 @@ class CompanyController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('jwtauth', ['only' => ['store','destroy','update','addFollow','unFollow']]);
-        $this->middleware('checkpermission:manager',['only' => ['store','update','destroy']]);
+        $this->middleware('jwtauth', ['only' => ['store',
+                                                'destroy',
+                                                'update',
+                                                'addFollow',
+                                                'unFollow',
+                                                'listFollowing',
+                                                'listFollowers',
+                                                'listEmployer',
+                                                // 'upToEmployer',
+                                                ]]);
+        $this->middleware('checkpermission:manager',['only' => ['store',
+                                                                'update',
+                                                                'destroy',
+                                                                // 'upToEmployer',
+                                                                ]]);
 
     }
 
@@ -54,10 +67,12 @@ class CompanyController extends Controller
         // return $company;
 
         $owner = $request->query('owner');
-        $perPage = $request->query('perPage');
+        
         $request->validate([
             'perPage'=>'numeric|min:5|max:20'
         ]);
+
+        $perPage = $request->query('perPage');
         if(!$perPage){
             $perPage = 15;
         }
@@ -182,7 +197,7 @@ class CompanyController extends Controller
     }
 
 
-    public function listFollow(Request $request,string $company_id){
+    public function listFollowers(Request $request,string $company_id){
         $company = Company::findOrFail($company_id);
         $user = \App\Models\User::join('company_follow_list','users.id','=','company_follow_list.user_id')
                             ->where('company_follow_list.company_id',$company_id);
@@ -196,6 +211,58 @@ class CompanyController extends Controller
 
         return new UserCollection($user->paginate($perPage)->appends($request->query()));
 
+    }
+
+    public function listFollowing(Request $request){
+        $user_id = $this->checkUser();
+
+        $company = Company::select('company.*','company_follow_list.user_id as isFollowing')
+                            ->join('company_follow_list','company.id','=','company_follow_list.company_id')
+                            ->where('company_follow_list.user_id',$user_id);
+        $perPage = $request->query('perPage');
+        $request->validate([
+            'perPage'=>'numeric|min:5|max:20'
+        ]);
+        if(!$perPage){
+            $perPage = 15;
+        }
+
+        return new CompanyCollection($company->paginate($perPage)->appends($request->query()));
+
+    }
+
+    public function upToEmployer(Request $request,string $company_id,string $user_id){
+        $user = User::findOrFail($user_id);
+        return $user->role();
+        $this->checkPermission($user,'employer');
+
+        \App\Models\Role_user::insert([
+            'role_id' => 2,
+            'user_id' => $user_id,
+        ]);
+
+        return new UserResource($user->refresh()->loadMissing('roles'));
+        
+    }
+
+    public function fireEmployer(Request $request,string $user_id){
+        $user = User::findOrFail($user_id);
+        
+        $this->checkPermission($user,'manager');
+        $roles =  $user->roles ;
+        $checkRole = $roles->last()->role_name;
+
+        if($checkRole=='user') {
+            return new UserResource($user->loadMissing('roles'));
+        }
+
+        \App\Models\Role_user::where([
+            'role_id' => 2,
+            'user_id' => $user_id,
+        ])->delete();
+
+        return new UserResource($user->refresh()->loadMissing('roles'));
+        
     }
 
 }

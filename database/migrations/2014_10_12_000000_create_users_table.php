@@ -28,9 +28,9 @@ return new class extends Migration
             $table->string('sex')->nullable();
             $table->string('phone')->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('address')->nullable();
-            $table->string('district')->nullable();
-            $table->string('province')->nullable();
+            $table->string('address');
+            $table->string('district');
+            $table->string('province');
             $table->string('avatar',500)->nullable();
             $table->string('password');
             $table->rememberToken();

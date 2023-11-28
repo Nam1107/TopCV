@@ -19,15 +19,6 @@ class User extends Authenticatable implements JWTSubject
      *
      * @var array<int, string>
      */
-    // name string
-    // sex string
-    // phone string
-    // address string
-    // city string
-    // role int
-    // avatar string
-    // email string
-    // password string
     protected $fillable = [
         'name',
         'sex',
@@ -67,6 +58,11 @@ class User extends Authenticatable implements JWTSubject
 
     public function roles(){
         return $this->belongsToMany(Role_tb::class, 'role_user', 'user_id', 'role_id');
+
+    }
+
+    public function role(){
+        return $this->roles()->latest()->first();
 
     }
 

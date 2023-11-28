@@ -25,10 +25,9 @@ class UpdateCompanyRequest extends FormRequest
         if($method == 'PUT'){
             return [
                 "name"=>['required'],
-                "email" =>['required','email'],
                 "address" =>['required'],
                 "district"=>['required'],
-                "city"=>['required'],
+                "province"=>['required'],
                 "phone"=>['required','numeric'],
                 "logo"=>['required'],
                 "detail"=>['required'],
@@ -38,15 +37,13 @@ class UpdateCompanyRequest extends FormRequest
         return [
             //
             "name"=>['sometimes','required'],
-                "email" =>['sometimes','required','email'],
-                "address" =>['sometimes','required'],
-                "district"=>['sometimes','required'],
-                "city"=>['sometimes','required'],
-                "phone"=>['sometimes','required','numeric'],
-                "logo"=>['sometimes','required'],
-                "detail"=>['sometimes','required'],
-                "url_page"=>['sometimes','required'],
-                "follow_count"=> ['sometimes','required'],
+            "address" =>['sometimes','required'],
+            "district"=>['sometimes','required'],
+            "province"=>['sometimes','required'],
+            "phone"=>['sometimes','required','numeric'],
+            "logo"=>['sometimes','required'],
+            "detail"=>['sometimes','required'],
+            "url_page"=>['sometimes','required'],
         ];
     }
 }

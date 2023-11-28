@@ -14,9 +14,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        \App\Models\Role_tb::insert([
+            [ 'role_name' => 'user'],
+            [ 'role_name' => 'employer'],
+            [ 'role_name' => 'manager'],
+            [ 'role_name' => 'admin'],
+            [ 'role_name' => 'coder'],
+        ]);
         
-        
-        DB::table('users')->create(
+
+        \App\Models\User::create(
             [
                 'name' => "Tran Nam",
                 'sex' => "Nam",
@@ -31,24 +38,15 @@ class DatabaseSeeder extends Seeder
                 // 'remember_token' => Str::random(10),
             ]
         );
+
         $this->call(UserSeeder::class);
-        $this->call(CompanySeeder::class);
-
-        
-
-        DB::table('role_tb')->insert([
-            [ 'role_name' => 'user'],
-            [ 'role_name' => 'employer'],
-            [ 'role_name' => 'manager'],
-            [ 'role_name' => 'admin'],
-        ]);
 
         DB::statement('
             INSERT INTO role_user(role_id,user_id)
             SELECT 1,id FROM users
             WHERE users.id >1
         ');
-        DB::table('role_user')->insert(
+        \App\Models\Role_user::insert(
             [
                 [
                     "role_id"=>1,
@@ -63,8 +61,14 @@ class DatabaseSeeder extends Seeder
                 ],[
                     "role_id"=>4,
                     "user_id"=>1
+                ],[
+                    "role_id"=>5,
+                    "user_id"=>1
                 ]
             ]
         );
+
+        $this->call(CompanySeeder::class);
+
     }
 }
