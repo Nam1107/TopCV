@@ -22,7 +22,7 @@ class CheckPermission
         })->first();
         if(!$permission){
             return response()->json([
-                'error' => 'You Do Not Have Permission To Access',
+                'message' => 'You Do Not Have Permission To Access',
                 'file'  => 'CheckPermission'
             ], 401);
         }

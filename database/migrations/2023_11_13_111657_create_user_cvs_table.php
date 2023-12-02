@@ -16,7 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('url_cv',500);
             $table->foreign('user_id')->references('id')->on('users');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
 
 

@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
     {
         \App\Models\Role_tb::insert([
             [ 'role_name' => 'user'],
-            [ 'role_name' => 'employer'],
             [ 'role_name' => 'manager'],
             [ 'role_name' => 'admin'],
             [ 'role_name' => 'coder'],
@@ -29,8 +28,8 @@ class DatabaseSeeder extends Seeder
                 'sex' => "Nam",
                 'phone'=> "0972969136",
                 'address'=> "Mỗ Lao",
-                'province'=> "Ha Đông",
-                'district'=> "Hà Nội",
+                'province'=> "Hà Nội",
+                'district'=> "Ha Đông",
                 'avatar'=>'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.nj.com%2Fentertainment%2F2020%2F05%2Feveryones-posting-their-facebook-avatar-how-to-make-yours-even-if-it-looks-nothing-like-you.html&psig=AOvVaw0ORbck3Xz-oUKq6-Alu4ux&ust=1700070234042000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCKDIiKmFxIIDFQAAAAAdAAAAABAE',
                 'email' => "nam@gmail.com",
                 'email_verified_at' => now(),
@@ -60,9 +59,6 @@ class DatabaseSeeder extends Seeder
                     "user_id"=>1
                 ],[
                     "role_id"=>4,
-                    "user_id"=>1
-                ],[
-                    "role_id"=>5,
                     "user_id"=>1
                 ]
             ]

@@ -14,7 +14,7 @@ class Company extends Model
         "email",
         "address",
         "district",
-        "city",
+        "province",
         "phone",
         "logo",
         "detail",
@@ -35,11 +35,11 @@ class Company extends Model
         return $this->hasMany(Company_follow_list::class)->get();
     }
 
-    public function employer(){
-        return $this->hasMany(Employer::class)->get();
+    public function member(){
+        return $this->hasMany(Member::class)->get();
     }
-    public function isEmployer(){
-        return !! $this->employer()->where('user_id', $user_id)->count();
+    public function isMember(string $user_id){
+        return $this->member()->where('member_id', $user_id)->count();
     }
 
     public function isFollowing(string $user_id)

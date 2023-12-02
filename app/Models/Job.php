@@ -37,5 +37,5 @@ class Job extends Model
         'status' ,
     ];
     protected $primaryKey = 'id';
-    protected $table = 'job';
+    protected $table = 'jobs';
 }

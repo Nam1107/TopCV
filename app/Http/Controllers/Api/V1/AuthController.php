@@ -23,9 +23,10 @@ class AuthController extends Controller
     }
     public function register(Request $request)
     {
+        // 
         $request->validate([
             'name' => 'required|string',
-            'email'=>'required|string|unique:users',
+            'email'=>'required|email',
             'password'=>'required|string|min:8',
             'c_password' => 'required|same:password'
         ]);
@@ -55,7 +56,7 @@ class AuthController extends Controller
         }
         else{
             return response()->json([
-                'error' => 'Provide proper details',
+                'message' => 'Provide proper details',
             ], 401);
         }
     }
@@ -86,17 +87,17 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
         if(!$user){
             return response()->json([
-                'error' => 'Email not required',
+                'message' => 'Email not required',
             ], 401);
         }
         if (!Hash::check($request->password, $user->password, [])) {
             return response()->json([
-                'error' => 'Unauthorized',
+                'message' => 'Unauthorized',
             ], 401);
         }
 
         if (! $token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['message' => 'Unauthorized'], 401);
         }
 
         $refreshToken = [

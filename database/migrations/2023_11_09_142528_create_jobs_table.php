@@ -25,7 +25,8 @@ return new class extends Migration
             $table->unsignedBigInteger('created_by');
             $table->string('status');
             $table->datetime('expire_at');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
 
             $table->foreign('company_id')->references('id')->on('company');
             $table->foreign('created_by')->references('id')->on('users');

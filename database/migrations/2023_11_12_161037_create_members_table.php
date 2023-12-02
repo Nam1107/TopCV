@@ -11,16 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('employer', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('employer_id');
+        Schema::create('members', function (Blueprint $table) {
+            $table->unsignedBigInteger('member_id');
             $table->unsignedBigInteger('company_id');
-            $table->datetime('start_date');
-            $table->datetime('end_date')->nullable();
-         
-            $table->foreign('employer_id')->references('id')->on('users');
+            $table->primary(['user_id', 'role_id']);
+        
+            $table->foreign('member_id')->references('id')->on('users');
             $table->foreign('company_id')->references('id')->on('company');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
 
     }
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('employer');
+        Schema::dropIfExists('members');
     }
 };

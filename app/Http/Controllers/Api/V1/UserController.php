@@ -18,9 +18,9 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('jwtauth', ['only' => ['store','update','delete','updateRole','upToEmployer','fireEmployer']]);
+        $this->middleware('jwtauth', ['only' => ['store','update','delete','updateRole']]);
         $this->middleware('checkpermission:admin',['only' => ['store','update','delete','updateRole']]);
-        $this->middleware('checkpermission:manager',['only' => ['upToEmployer']]);
+        $this->middleware('checkpermission:manager',['only' => []]);
 
     }
     public function checkPermission(User $user,$role){
@@ -74,7 +74,7 @@ class UserController extends Controller
 
 
     public function updateRole(Request $request,string $user_id){
-        $role_arr = ['user','employer','manager','admin'];
+        $role_arr = ['user','manager','admin'];
         $user = User::findOrFail($user_id);
         $request->validate([
             'role'=>['required',Rule::in($role_arr)]
@@ -90,7 +90,7 @@ class UserController extends Controller
 
         if($role == 'admin'){
             return response()->json([
-                'error' => 'You Do Not Have Permission To Access',
+                'message' => 'You Do Not Have Permission To Access',
                 'file'  => 'UserController:updateRole'
             ], 401);
         }

@@ -27,13 +27,13 @@ class CompanyController extends Controller
                                                 'unFollow',
                                                 'listFollowing',
                                                 'listFollowers',
-                                                'listEmployer',
-                                                // 'upToEmployer',
+                                                'listMember',
+                                                'upToMember',
                                                 ]]);
         $this->middleware('checkpermission:manager',['only' => ['store',
                                                                 'update',
                                                                 'destroy',
-                                                                // 'upToEmployer',
+                                                                'upToMember',
                                                                 ]]);
 
     }
@@ -92,13 +92,18 @@ class CompanyController extends Controller
         $count = Company::where('owner_id',$user_id)->count();
         if($count >=3){
             return response()->json([
-                'error'=>'You have so many companies'
+                'message'=>'You have so many companies'
             ],401);
 
         }
         $request['owner_id'] = $user_id;
 
         $company = Company::create($request->all());
+        $company_id = $company->id;
+        \App\Models\Member::firstOrCreate([
+            'member_id' => $user_id ,
+            'company_id'=>$company_id,
+        ]);
         return new CompanyResource($company);
 
 
@@ -136,7 +141,7 @@ class CompanyController extends Controller
 
         if($user_id !== $owner_id){
             return response()->json([
-                'error' => 'You Do Not Have Permission To Access',
+                'message' => 'You Do Not Have Permission To Access',
             ], 401);
         }
         $company->update($request->all());
@@ -151,16 +156,24 @@ class CompanyController extends Controller
     }
     public function destroy(Company $company)
     {
-        //
+        $company_id = $company->id;
+        $members = \App\Models\Member::where(
+            ['company_id'=>$company_id,
+            'end_date'=>null
+        ])->update([
+            'end_date'=>now()
+        ]);
+
         $user_id = $this->checkUser();
         $company_id = $company->id;
         $owner_id = $company->owner_id;
  
         if($user_id !== $owner_id){
             return response()->json([
-                'error' => 'You Do Not Have Permission To Access',
+                'message' => 'You Do Not Have Permission To Access',
             ], 401);
         }
+        $member = \App\Models\Member::where(['company_id'=>$company_id])->delete();
         $company->delete();
         return response()->json([
             'message' => 'Deleted successfully',
@@ -231,38 +244,8 @@ class CompanyController extends Controller
 
     }
 
-    public function upToEmployer(Request $request,string $company_id,string $user_id){
-        $user = User::findOrFail($user_id);
-        return $user->role();
-        $this->checkPermission($user,'employer');
+    
 
-        \App\Models\Role_user::insert([
-            'role_id' => 2,
-            'user_id' => $user_id,
-        ]);
 
-        return new UserResource($user->refresh()->loadMissing('roles'));
-        
-    }
-
-    public function fireEmployer(Request $request,string $user_id){
-        $user = User::findOrFail($user_id);
-        
-        $this->checkPermission($user,'manager');
-        $roles =  $user->roles ;
-        $checkRole = $roles->last()->role_name;
-
-        if($checkRole=='user') {
-            return new UserResource($user->loadMissing('roles'));
-        }
-
-        \App\Models\Role_user::where([
-            'role_id' => 2,
-            'user_id' => $user_id,
-        ])->delete();
-
-        return new UserResource($user->refresh()->loadMissing('roles'));
-        
-    }
 
 }
