@@ -29,11 +29,15 @@ class CompanyController extends Controller
                                                 'listFollowers',
                                                 'listMember',
                                                 'upToMember',
+                                                'myCompany'
                                                 ]]);
         $this->middleware('checkpermission:manager',['only' => ['store',
                                                                 'update',
                                                                 'destroy',
+                                                                'listFollowers',
+                                                                // 'listMember',
                                                                 'upToMember',
+                                                                'myCompany',
                                                                 ]]);
 
     }
@@ -62,11 +66,11 @@ class CompanyController extends Controller
         });
 
         // $filter = ['follow_count'=>'6'];
-        // $owner = $request->query('owner');
+        // $manager = $request->query('manager');
         // $company = Company::where($filter)->get();
         // return $company;
 
-        $owner = $request->query('owner');
+        $manager = $request->query('manager');
         
         $request->validate([
             'perPage'=>'numeric|min:5|max:20'
@@ -76,8 +80,8 @@ class CompanyController extends Controller
         if(!$perPage){
             $perPage = 15;
         }
-        if($owner){
-            $company = $company->with('ownedBy');
+        if($manager){
+            $company = $company->with('managedBy');
         }
 
         return new CompanyCollection($company->paginate($perPage)->appends($request->query()));
@@ -89,18 +93,19 @@ class CompanyController extends Controller
     public function store(StoreCompanyRequest $request)
     {
         $user_id = $this->checkUser();
-        $count = Company::where('owner_id',$user_id)->count();
+        $count = Company::where('manager_id',$user_id)->count();
         if($count >=3){
             return response()->json([
                 'message'=>'You have so many companies'
             ],401);
 
         }
-        $request['owner_id'] = $user_id;
+        $request['manager_id'] = $user_id;
+        $request['follow_count'] = 1;
 
         $company = Company::create($request->all());
         $company_id = $company->id;
-        \App\Models\Member::firstOrCreate([
+        \App\Models\Member::create([
             'member_id' => $user_id ,
             'company_id'=>$company_id,
         ]);
@@ -123,9 +128,9 @@ class CompanyController extends Controller
                             })
                             ->where('company.id',$company_id)->first();
 
-        $includeInvoices = request()->query('owner');
+        $includeInvoices = request()->query('manager');
         if($includeInvoices){
-                return new CompanyResource($cop->loadMissing('ownedBy'));
+                return new CompanyResource($cop->loadMissing('managedBy'));
         }
         return new CompanyResource($cop);
     }
@@ -137,9 +142,9 @@ class CompanyController extends Controller
     {
         $user_id = $this->checkUser();
         $company_id = $company->id;
-        $owner_id = $company->owner_id;
+        $manager_id = $company->manager_id;
 
-        if($user_id !== $owner_id){
+        if($user_id !== $manager_id){
             return response()->json([
                 'message' => 'You Do Not Have Permission To Access',
             ], 401);
@@ -152,7 +157,7 @@ class CompanyController extends Controller
                                 $join->where('user_id','=',$user_id);
                             })
                             ->where('company.id',$company_id)->first();
-        return new CompanyResource($company->loadMissing('ownedBy'));
+        return new CompanyResource($company->loadMissing('managedBy'));
     }
     public function destroy(Company $company)
     {
@@ -166,9 +171,9 @@ class CompanyController extends Controller
 
         $user_id = $this->checkUser();
         $company_id = $company->id;
-        $owner_id = $company->owner_id;
+        $manager_id = $company->manager_id;
  
-        if($user_id !== $owner_id){
+        if($user_id !== $manager_id){
             return response()->json([
                 'message' => 'You Do Not Have Permission To Access',
             ], 401);
@@ -229,7 +234,10 @@ class CompanyController extends Controller
     public function listFollowing(Request $request){
         $user_id = $this->checkUser();
 
-        $company = Company::select('company.*','company_follow_list.user_id as isFollowing')
+        // $company = Company::select('company.*','company_follow_list.user_id as isFollowing')
+        //                     ->join('company_follow_list','company.id','=','company_follow_list.company_id')
+        //                     ->where('company_follow_list.user_id',$user_id);
+        $company = Company::select('company.*')
                             ->join('company_follow_list','company.id','=','company_follow_list.company_id')
                             ->where('company_follow_list.user_id',$user_id);
         $perPage = $request->query('perPage');
@@ -243,6 +251,21 @@ class CompanyController extends Controller
         return new CompanyCollection($company->paginate($perPage)->appends($request->query()));
 
     }
+
+    public function myCompany(Request $request){
+        $user_id = $this->checkUser();
+        $company = Company::where(['manager_id' =>$user_id]);
+        return new CompanyCollection($company->paginate()->appends($request->query()));
+
+    }
+
+    public function listJob(string $company_id){
+        $company = Company::findOrFail($company_id);
+        $jobs = $company->listJob();
+        return $jobs;
+    }
+
+
 
     
 

@@ -23,19 +23,25 @@ class Job extends Model
 
     // protected $guarded = [];
     protected $fillable = [
-        'name', 
-        'salary', 
-        'sex', 
-        'desc', 
-        'exp',
-        'quantity' ,
-        'level' ,
-        'type' ,
-        'company_id' ,
-        'created_by' ,
-        'expire_at' ,
-        'status' ,
+        "title", 
+        "salary", 
+        "sex_required", 
+        "desc", 
+        "exp_required",
+        "quantity" ,
+        "level_required" ,
+        "field_of_job" ,
+        "company_id" ,
+        "created_by" ,
+        "expire_at" ,
     ];
     protected $primaryKey = 'id';
     protected $table = 'jobs';
+
+    public function createdBy(){
+        return $this->belongsTo(User::class,'created_by','id');
+    }
+    public function company(){
+        return $this->belongsTo(Company::class,'company_id','id');
+    }
 }

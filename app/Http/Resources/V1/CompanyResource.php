@@ -15,7 +15,7 @@ class CompanyResource extends JsonResource
     public function toArray(Request $request): array
     {
         // return parent::toArray($request);
-        $is_follow = isset($this->isFollowing) ? 1 : 0;
+        // $is_follow = isset($this->isFollowing) ? 1 : 0;
 
         return [
             'id'=> $this->id,
@@ -31,8 +31,8 @@ class CompanyResource extends JsonResource
             'follow_count'=> $this->follow_count,
             'created_at'=> $this->created_at,
             'updated_at'=> $this->updated_at,
-            'owner'=> new UserResource($this->whenLoaded('ownedBy')),
-            'followed'=> $is_follow 
+            'manager'=> new UserResource($this->whenLoaded('managedBy')),
+            'isFollowing'=> $this->isFollow()
         ];
     }
 }

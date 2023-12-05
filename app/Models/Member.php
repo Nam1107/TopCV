@@ -16,11 +16,8 @@ class Member extends Model
     // end_date datetime
 
     protected $fillable = [
-        'members_id',
-        'company_id',
-        'status',
-        'start_date',
-        'end_date',
+        'member_id',
+        'company_id'
     ];
     protected $primaryKey = 'id';
     protected $table = 'members';

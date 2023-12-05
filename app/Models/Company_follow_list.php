@@ -15,12 +15,13 @@ class Company_follow_list extends Model
         "user_id",
         "company_id",
     ];
-    protected $primaryKey = 'id';
+    protected $primaryKey = ['user_id', 'company_id'];
+    public $incrementing = false;
     protected $table = 'Company_follow_list';
 
     public function userFollow()
     {
-        return $this->belongsTo(User::class,'user_id','id');
+        return $this->belongsTo(User::class,'id','user_id');
     }
     public function companyFollow()
     {

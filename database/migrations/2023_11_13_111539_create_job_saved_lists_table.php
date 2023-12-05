@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('job_saved_list', function (Blueprint $table) {
-            $table->id();
-            
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('job_id');
+            $table->primary(['user_id', 'job_id']);
+            
          
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('job_id')->references('id')->on('jobs');

@@ -44,7 +44,7 @@ class UserController extends Controller
         if(!$perPage){
             $perPage = 15;
         }
-        return new UserCollection(User::paginate(5));
+        return new UserCollection(User::paginate($perPage)->appends($request->query()));
         //
     }
 

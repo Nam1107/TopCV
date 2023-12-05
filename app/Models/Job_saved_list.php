@@ -10,9 +10,9 @@ class Job_saved_list extends Model
     use HasFactory;
     protected $fillable = [
         'user_id',
-        'refresh_token',
-        'token_type',
+        'job_id',
     ];
-    protected $primaryKey = 'id';
-    protected $table = 'refresh_tokens';
+    protected $primaryKey = ['user_id', 'job_id'];
+    public $incrementing = false;
+    protected $table = 'Job_saved_list';
 }

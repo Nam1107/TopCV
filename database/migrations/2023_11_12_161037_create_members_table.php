@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('members', function (Blueprint $table) {
             $table->unsignedBigInteger('member_id');
             $table->unsignedBigInteger('company_id');
-            $table->primary(['user_id', 'role_id']);
+            $table->primary(['member_id', 'company_id']);
         
             $table->foreign('member_id')->references('id')->on('users');
             $table->foreign('company_id')->references('id')->on('company');

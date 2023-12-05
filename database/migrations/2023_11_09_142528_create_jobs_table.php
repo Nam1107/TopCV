@@ -16,18 +16,16 @@ return new class extends Migration
             $table->string('title');
             $table->string('salary');
             $table->string('sex_required');
-            $table->string('desc');
+            $table->string('desc',500);
             $table->string('exp_required');
             $table->integer('quantity');
             $table->string('level_required');
-            $table->string('field_of_job');
+            $table->string('field_of_job',500);
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('created_by');
-            $table->string('status');
             $table->datetime('expire_at');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
-
             $table->foreign('company_id')->references('id')->on('company');
             $table->foreign('created_by')->references('id')->on('users');
         });

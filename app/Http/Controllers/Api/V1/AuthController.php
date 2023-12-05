@@ -149,8 +149,18 @@ class AuthController extends Controller
     {
         $token = $request->bearerToken();
         // $token = $request['refresh_token'];
-        $id = RefreshToken::where('refresh_token', $token)->firstOrFail();
-        $user = User::where('id', $id['user_id'])->firstOrFail();
+        $id = RefreshToken::where('refresh_token', $token)->first();
+        if(!$id){
+            return response()->json([
+                'message' => 'Token has expired',
+            ], 401);
+        }
+        $user = User::where('id', $id['user_id'])->first();
+        if(!$user){
+            return response()->json([
+                'message' => 'Token has expired',
+            ], 401);
+        }
         $token = auth()->refresh(); // set Black_list is false.
         return $this->respondWithToken($token);
     }

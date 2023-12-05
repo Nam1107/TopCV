@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Http\Resources\V1\CompanyResource;
 use App\Http\Resources\V1\CompanyCollection;
 use App\Http\Resources\V1\UserCollection;
+use App\Http\Resources\V1\UserResource;
 use App\Http\Requests\V1\StoreCompanyRequest;
 use Illuminate\Http\Request;
 
@@ -34,41 +35,35 @@ class MemberController extends Controller
         $member = User::findOrFail($member_id);
         $company = Company::findOrFail($company_id);
         $user = auth()->user();
-        $manager_id = $company->owner_id;
+        $manager_id = $company->manager_id;
         if($manager_id != $user->id){
             return response()->json([
                 'message' => 'You Are Not The Manager Of Company',
                 'file'  => 'MemberController'
             ], 401);
         }
-        $role = $member->role();
         $check = $company->isMember($member_id);
-
         if($check){
             return response()->json([
                 'message' => "User already is member",
                 'file'  => 'MemberController'
             ], 401);
         }
-        if($role->id >2){
-            return response()->json([
-                'message' => "You can't employ this user",
-                'file'  => 'MemberController'
-            ], 401);
-        }
         
-        if($role->id == 1){
-            \App\Models\Role_user::firstOrCreate([
-                'role_id' => 2,
-                'user_id' => $member_id,
-            ]);
-        }
-        \App\Models\Member::firstOrCreate([
+        \App\Models\Member::create([
             'member_id' => $member_id,
-            'company_id'=>$company_id,
+            'company_id'=> $company_id,
         ]);
         return new UserResource($member->refresh()->loadMissing('roles'));
         
+    }
+
+    public function isMember(string $company_id,string $member_id){
+        $member = User::findOrFail($member_id);
+        $company = Company::findOrFail($company_id);
+        $check = $company->isMember($member_id);
+        return $check;
+
     }
 
     public function removeMember(Request $request,string $member_id){
@@ -88,7 +83,7 @@ class MemberController extends Controller
             $company_id = $value['company_id'];
             $company = Company::findOrFail($company_id);
 
-            if($manager_id != $company->owner_id){
+            if($manager_id != $company->manager_id){
                 return response()->json([
                     'message' => 'You Are Not The Manager Of Company',
                     'file'  => 'MemberController'
@@ -102,24 +97,44 @@ class MemberController extends Controller
                     'file'  => 'MemberController'
                 ], 401);
             }
-            // $owner_id = $company->owner_id;
-            // if($owner_id != $user->id){
-            //     return response()->json([
-            //         'message' => 'You Do Not Have Permission To Access',
-            //     ], 401);
-            // }
+        };
 
-            // return Arr::except($arr,['customerId','billedDate','paidDate']);
-        }
-        return 1;
-        
+        $array_req = $array_req->map(function($item) {
+            return array_merge($item, [
+                'user_id' => $member_id
+            ]);
+        });
 
-        \App\Models\Role_user::where([
+        return $array_req;
+
+        \App\Models\Member::where([
             'role_id' => 2,
             'user_id' => $user_id,
         ])->delete();
 
         return new UserResource($user->refresh()->loadMissing('roles'));
         
+    }
+
+    public function listMember(Request $request,string $company_id){
+        $company = Company::findOrFail($company_id);
+        $manager_id = $company->manager_id;
+        // $manager = $company->managedBy();
+        
+        $members = User::select('users.*')
+                    ->join('members','users.id','=','members.member_id')
+                    ->where('members.company_id','=',$company_id)
+                    ->where('members.member_id','!=',$manager_id);
+        // $mergeTbl = $manager->unionAll($members);
+        // return new UserCollection($mergeTbl->paginate());
+        $perPage = $request->query('perPage');
+        $request->validate([
+            'perPage'=>'numeric|min:5|max:20'
+        ]);
+        if(!$perPage){
+            $perPage = 15;
+        }
+        return new UserCollection($members->paginate($perPage));
+
     }
 }

@@ -14,6 +14,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        
+        
         \App\Models\Role_tb::insert([
             [ 'role_name' => 'user'],
             [ 'role_name' => 'manager'],
@@ -65,6 +67,16 @@ class DatabaseSeeder extends Seeder
         );
 
         $this->call(CompanySeeder::class);
+
+        DB::statement('
+            INSERT INTO members(company_id,member_id)
+            SELECT id,manager_id FROM company
+        ');
+
+        DB::statement('
+            INSERT INTO company_follow_list(company_id,user_id)
+            SELECT id,manager_id FROM company
+        ');
 
     }
 }

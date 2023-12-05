@@ -23,13 +23,13 @@ return new class extends Migration
             $table->string('logo',500)->nullable();
             $table->string('detail',500)->nullable();
             $table->string('url_page',500)->nullable();
-            $table->integer('follow_count')->default(0);
-            $table->unsignedBigInteger('owner_id');
+            $table->integer('follow_count')->default(1);
+            $table->unsignedBigInteger('manager_id');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
             
          
-            $table->foreign('owner_id')->references('id')->on('users');
+            $table->foreign('manager_id')->references('id')->on('users');
         });
 
     }

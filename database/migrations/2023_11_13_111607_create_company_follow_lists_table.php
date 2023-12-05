@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('company_follow_list', function (Blueprint $table) {
-            $table->id();
-            
+
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('company_id');
+            $table->primary(['user_id', 'company_id']);
          
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('company_id')->references('id')->on('company');

@@ -19,15 +19,15 @@ class Company extends Model
         "logo",
         "detail",
         "url_page",
-        "owner_id",
-        "follow_count",
+        "manager_id",
+        "follow_count"
     ];
     protected $primaryKey = 'id';
     protected $table = 'company';
 
-    public function ownedBy()
+    public function managedBy()
     {
-        return $this->belongsTo(User::class,'owner_id','id');
+        return $this->belongsTo(User::class,'manager_id','id');
     }
 
     public function following()
@@ -38,12 +38,22 @@ class Company extends Model
     public function member(){
         return $this->hasMany(Member::class)->get();
     }
+
+    public function listJob(){
+        return $this->hasMany(Job::class)->get();
+    }
+    
     public function isMember(string $user_id){
-        return $this->member()->where('member_id', $user_id)->count();
+        return !!$this->member()->where('member_id', $user_id)->count();
     }
 
-    public function isFollowing(string $user_id)
-    {
-        return !! $this->following()->where('user_id', $user_id)->count();
+    public function isFollow(){
+        $user = auth()->user();
+        $user_id = 0;
+        if($user){
+            $user_id = $user->id;
+        }
+        return  !!$this->following()->where('user_id', $user_id)->count();
     }
+
 }
